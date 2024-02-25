@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
+
+    <PublishTrimmed>true</PublishTrimmed>
+    <UseAppHost>false</UseAppHost>
+    <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <SelfContained>true</SelfContained>
+
+
+    <!-- We have to add this to the application's project because the codegen uses unsafe in marshalling -->
+    <!-- An alternative would be to emit code that uses some kind of Wit.Runtime project that deals with the unsafe aspects -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <!-- Once you start working with strings, you must add an extra line -->
+    <IlcExportUnmanagedEntrypoints>true</IlcExportUnmanagedEntrypoints>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.35.0" />
+    <PackageReference Include="Microsoft.DotNet.ILCompiler.LLVM; runtime.win-x64.Microsoft.DotNet.ILCompiler.LLVM" Version="8.0.0-*" />
+  </ItemGroup>
+
+  <!-- For simplicity, publish on build -->
+  <Target Name="RunAotBuild" AfterTargets="Build" DependsOnTargets="Publish" />
+
+  <Target Name="CompileCabiRealloc" BeforeTargets="IlcCompile" DependsOnTargets="CheckWasmSdks" Inputs="$(MSBuildProjectDirectory)/wit-bindgen/MarkdownWorld_cabi_realloc.c" Outputs="$(MSBuildProjectDirectory)/wit-bindgen/MarkdownWorld_cabi_realloc.o">
+    <Exec Command="emcc.bat &quot;$(MSBuildProjectDirectory)/wit-bindgen/MarkdownWorld_cabi_realloc.c&quot; -c -o &quot;$(MSBuildProjectDirectory)/wit-bindgen/MarkdownWorld_cabi_realloc.o&quot;"/>
+  </Target>
+
+  <ItemGroup>
+    <CustomLinkerArg Include="-mexec-model=reactor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <NativeObjects Include="wit-bindgen\**\*.o" />
+  </ItemGroup>
+
+</Project>

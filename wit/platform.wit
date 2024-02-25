@@ -1,0 +1,22 @@
+package pizza4dotnet:example@0.1.0;
+
+interface converter {
+    to-html: func(markdown: string) -> string;
+}
+
+interface greeting {
+    greet: func(name: string) -> string; 
+}
+
+world markdown {
+    export converter;
+}
+
+world greeter {
+    export greeting;
+    import converter;
+}
+
+world host {
+    import greeting;
+}
