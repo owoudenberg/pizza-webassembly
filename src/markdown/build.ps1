@@ -1,7 +1,7 @@
 wit-bindgen.exe c-sharp --runtime native-aot --world markdown "$PSScriptRoot\..\..\wit\platform.wit" --out-dir "$PSScriptRoot\wit-bindgen"
 
 Write-Output "Building markdown module"
-dotnet build -c Release
+dotnet build "$PSScriptRoot\markdown.csproj" -c Release
 
 Write-Output "Linking markdown module as a component"
 wasm-tools component new `

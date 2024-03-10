@@ -1,7 +1,7 @@
 wit-bindgen.exe c-sharp --runtime native-aot --world host "$PSScriptRoot\..\..\wit\platform.wit" --out-dir "$PSScriptRoot\wit-bindgen"
 
 Write-Output "Building host module"
-dotnet build -c Release
+dotnet build "$PSScriptRoot\host.csproj" -c Release
 
 Write-Output "Linking host module as a component and composing with greeter dependency"
 wasm-tools component new `
