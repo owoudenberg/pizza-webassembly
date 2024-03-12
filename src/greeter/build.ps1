@@ -1,4 +1,4 @@
-wit-bindgen c "$PSScriptRoot\..\..\wit\platform.wit" --world greeter
+wit-bindgen c "$PSScriptRoot\..\..\wit\platform.wit" --world greeter --out-dir "$PSScriptRoot"
 
 'obj', 'bin' | ForEach-Object { New-Item -ItemType Directory -Path "$PSScriptRoot\$_" -Force } | Out-Null
 

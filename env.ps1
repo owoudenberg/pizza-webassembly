@@ -2,13 +2,14 @@
 $wasiSdkVersion = "21.0"
 $emscriptenSdkVersion = "3.1.54"
 $wasmToolVersion = "1.200.0"
-$wasmtimeAdaptersVersion = "18.0.1"
+$wasmtimeVersion = "18.0.1"
 $witBindgenVersion = "0.19.1"
 
 $wasiSdkUrl = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$(($wasiSdkVersion -split '\.')[0])/wasi-sdk-$wasiSdkVersion.m-mingw.tar.gz"
 $emscriptenSdkUrl = "https://github.com/emscripten-core/emsdk/archive/refs/tags/$emscriptenSdkVersion.zip"
 $wasmToolsUrl = "https://github.com/bytecodealliance/wasm-tools/releases/download/v$wasmToolVersion/wasm-tools-$wasmToolVersion-x86_64-windows.zip"
-$wasmtimeAdaptersUrl = "https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeAdaptersVersion/"
+$wasmtimeUrl = "https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/wasmtime-v$wasmtimeVersion-x86_64-windows.zip"
+$wasmtimeAdaptersUrl = "https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtimeVersion/"
 $witBindgenUrl = "https://github.com/bytecodealliance/wit-bindgen/releases/download/v$witBindgenVersion/wit-bindgen-$witBindgenVersion-x86_64-windows.zip"
 
 
@@ -60,8 +61,19 @@ if (-not (Test-Path $wasmtoolsRoot)) {
 }
 Add-Path ("$wasmtoolsRoot" | Resolve-Path)
 
+
+#Install wasmtime if not already installed
+$wasmtimeRoot = "$toolsFolder/wasmtime/$wasmtimeVersion"
+if (-not (Test-Path $wasmtimeRoot)) {
+    Write-Output "Downloading and extracting wasmtime to $wasmtimeRoot"
+    $wasmtimeDownload = Download-File $wasmtimeUrl $downloadFolder
+    New-Item -ItemType Directory -Path $wasmtimeRoot -Force | Out-Null
+    tar -xf "$wasmtimeDownload" -C "$wasmtimeRoot" --strip-components=1
+}
+Add-Path ("$wasmtimeRoot" | Resolve-Path)
+
 #Install wasmtime adapters if not already installed
-$wasmtimeAdaptersRoot = "$toolsFolder/wasi-adapters/$wasmtimeAdaptersVersion"
+$wasmtimeAdaptersRoot = "$toolsFolder/wasi-adapters/$wasmtimeVersion"
 if (-not (Test-Path $wasmtimeAdaptersRoot)) {
     Write-Output "Downloading and extracting wasmtime adapters to $wasmtimeAdaptersRoot"
     New-Item -ItemType Directory -Path $wasmtimeAdaptersRoot -Force | Out-Null
