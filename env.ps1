@@ -100,8 +100,8 @@ if (-not (Test-Path $emscriptenSdkRoot)) {
     New-Item -ItemType Directory -Path $emscriptenSdkRoot -Force | Out-Null
     tar -xf "$emscriptenSdkDownload" -C "$emscriptenSdkRoot" --strip-components=1
     & "$emscriptenSdkRoot\emsdk" install $emscriptenSdkVersion
-    & "$emscriptenSdkRoot\emsdk" activate $emscriptenSdkVersion
 }
+& "$emscriptenSdkRoot\emsdk" activate $emscriptenSdkVersion
 
 # Install wasi-sdk if not already installed
 $witBindgenSdkRoot = "$toolsFolder/wit-bindgen/$witBindgenVersion"

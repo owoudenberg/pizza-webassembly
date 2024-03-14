@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>WebAssembly - Example</title>
+  </head>
+  <body>
+    <div>
+      <span>40 + 2 = </span>
+      <span id="output"></span>
+    </div>
+
+    <script>
+      fetch("add.wasm")
+        .then((response) => response.arrayBuffer())
+        .then((bytes) => WebAssembly.instantiate(bytes, { imports: {} }))
+        .then(({ instance }) => {
+          document.getElementById("output").innerHTML = instance.exports.add(
+            40,
+            2
+          );
+        });
+    </script>
+  </body>
+</html>
